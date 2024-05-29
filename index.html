@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Order</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="order-form">
+        <img src="Logo.png" alt="Logo DigiFlixxx" class="logo">
+        <h2>Form Order DigiFlixxx</h2>
+        <div class="timer">Promo akan berakhir sampai: <span id="countdown"></span></div>
+        <div class="form-group">
+            <label for="package">Paket yang dipilih</label>
+            <select id="package" required>
+                <option value="" disabled selected>Pilih paket</option>
+                <option value="6bulan">Paket Coba-Coba</option>
+                <option value="selamanya">Paket Selamanya</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="price">Harga</label>
+            <input type="text" id="price" readonly placeholder="Rp.xxxxx">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Masukkan email Gmail anda" required>
+        </div>
+        <div class="form-group">
+            <label for="payment">Pembayaran</label>
+            <select id="payment" required>
+                <option value="" disabled selected>Pilih pembayaran</option>
+                <option value="dana">DANA</option>
+                <option value="bca">BCA Virtual Account</option>
+                <option value="bni">BNI Virtual Account</option>
+                <option value="mandiri">Mandiri Virtual Account</option>
+                <option value="bri">BRI Virtual Account</option>
+                <option value="cimb">CIMB Niaga</option>
+                <option value="panin">Panin Bank</option>
+                <option value="btpn">BTPN/Jenius</option>
+                <option value="lainnya">Bank Lainnya</option>
+                <option value="agen_brilink">Agen BRILink</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <span id="account-number"></span>
+            <span id="copy-text" class="copy-text" style="display:none;">SALIN</span>
+        </div>
+        <div class="form-group">
+            <span>Jika sudah bayar silahkan klik 'Sudah Bayar' dan kirim screenshot bukti pembayaran</span>
+        </div>
+        <div class="submit-group">
+            <button id="submit">Sudah Bayar</button>
+        </div>
+        <div class="footer">© DigiFlixxx 2024</div>
+    </div>
+
+    <script>
+        function startCountdown() {
+            const now = new Date();
+            const end = new Date();
+            end.setHours(23, 59, 59, 999);
+            const distance = end - now;
+
+            if (distance > 0) {
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('countdown').textContent = `${hours}j ${minutes}m ${seconds}d`;
+
+                setTimeout(startCountdown, 1000);
+            } else {
+                document.getElementById('countdown').textContent = "Promo telah berakhir";
+            }
+        }
+
+        document.getElementById('package').addEventListener('change', function() {
+            const priceField = document.getElementById('price');
+            if (this.value === '6bulan') {
+                priceField.value = 'Rp.49.000';
+            } else if (this.value === 'selamanya') {
+                priceField.value = 'Rp.129.000';
+            } else {
+                priceField.value = '';
+            }
+        });
+
+        document.getElementById('payment').addEventListener('change', function() {
+            const accountNumberField = document.getElementById('account-number');
+            const copyText = document.getElementById('copy-text');
+            let accountNumber = '';
+
+            switch (this.value) {
+                case 'dana':
+                    accountNumber = 'DANA123456';
+                    break;
+                case 'bca':
+                    accountNumber = 'BCA123456';
+                    break;
+                case 'bni':
+                    accountNumber = 'BNI123456';
+                    break;
+                case 'mandiri':
+                    accountNumber = 'MANDIRI123456';
+                    break;
+                case 'bri':
+                    accountNumber = 'BRI123456';
+                    break;
+                case 'cimb':
+                    accountNumber = 'CIMB123456';
+                    break;
+                case 'panin':
+                    accountNumber = 'PANIN123456';
+                    break;
+                case 'btpn':
+                    accountNumber = 'BTPN123456';
+                    break;
+                case 'lainnya':
+                    accountNumber = 'LAINNYA123456';
+                    break;
+                case 'agen_brilink':
+                    accountNumber = 'BRILINK123456';
+                    break;
+            }
+
+            accountNumberField.textContent = accountNumber;
+            copyText.style.display = accountNumber ? 'inline' : 'none';
+        });
+
+        document.getElementById('copy-text').addEventListener('click', function() {
+            const accountNumber = document.getElementById('account-number').textContent;
+            navigator.clipboard.writeText(accountNumber).then(() => {
+                alert('Nomor rekening berhasil disalin!');
+            });
+        });
+
+        document.getElementById('submit').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            if (email) {
+                const waUrl = `https://wa.me/6283114978078?text=Saya%20sudah%20melakukan%20pembayaran,%20tolong%20segera%20diproses,%20ini%20email%20saya%20${email}%20terima%20kasih`;
+                window.open(waUrl, '_blank');
+            } else {
+                alert('Mohon masukkan email Anda.');
+            }
+        });
+
+        startCountdown();
+    </script>
+</body>
+</html>
